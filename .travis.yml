@@ -1,0 +1,12 @@
+branches:
+  except:
+    - gh-pages
+
+language: python
+
+python:
+  - "3.4"
+
+install: pip install .
+
+script: "python setup.py test"
