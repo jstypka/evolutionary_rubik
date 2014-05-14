@@ -26,11 +26,11 @@ def mutate(individuals_and_applied_rotations):
 
 
 def main():
-    individuals_and_applied_rotations = [(Cube(), []) for i in range(INDIVIDUALS_COUNT)]
+    c = Cube()
+    c.scramble()
+    c.recalculate_fitness()
 
-    for pair in individuals_and_applied_rotations:
-        pair[0].scramble()
-        pair[0].recalculate_fitness()
+    individuals_and_applied_rotations = [(deepcopy(c), []) for i in range(INDIVIDUALS_COUNT)]
 
     generations = 0
     while none_solved(individuals_and_applied_rotations):
@@ -49,7 +49,8 @@ def main():
         individuals_and_applied_rotations.extend(deepcopy(individuals_and_applied_rotations[:LAMBDA]))
 
         lowest_fitness = individuals_and_applied_rotations[0][0].fitness
-        print("Generation %d ends. Lowest fitness so far: %d" % (generations, lowest_fitness))
+        print("Generation %d ends. Population size: %s Lowest fitness so far: %d"
+              % (generations, len(individuals_and_applied_rotations), lowest_fitness))
 
     print("Solved in %d generations" % generations)
 
