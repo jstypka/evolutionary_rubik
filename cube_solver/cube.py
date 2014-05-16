@@ -60,6 +60,7 @@ class Cube:
     def scramble(self, moves=30):
         for i in range(moves):
             random.choice(rotate_functions)(self)
+        self.recalculate_fitness()
 
     def is_solved(self):
         return self.fitness == 0
