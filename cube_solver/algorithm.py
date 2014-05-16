@@ -18,7 +18,7 @@ def none_solved(population):
 def mutate(individuals_and_applied_rotations):
     for cube, mutation_list in individuals_and_applied_rotations:
         print("Before:", len(mutation_list))
-        mutation = random.choice(mutations)  # sometimes mutation == []
+        mutation = random.choice(mutations)
         for rotation in mutation:
             rotation(cube)
             mutation_list.append(rotation.__name__)

@@ -58,7 +58,7 @@ mutations = []
 for move in _magic_moves:
     rotations_of_a_magic_move = re.findall("[A-Z][a-z]?", move)  # split to singe rotations (split on capital letters)
     for rotations_mapping in _orientations.values():
-        mutation = (rotations_mapping[r] for r in rotations_of_a_magic_move)
+        mutation = tuple(rotations_mapping[r] for r in rotations_of_a_magic_move)
         mutations.append(mutation)
 
 rotation_to_function_mapping = _orientations['F']
