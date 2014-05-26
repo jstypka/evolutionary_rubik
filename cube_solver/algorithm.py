@@ -27,6 +27,13 @@ def mutate(individuals_and_applied_rotations):
         cube.recalculate_fitness()
 
 
+def truncation_selection(population):
+    population = sorted(population, key=lambda pair: (pair[0].fitness,  len(pair[1])))
+    population = population[:PARENTS]
+    best_guy = population[0]
+    return population, best_guy
+
+
 def average_mutation_length(population):
     length_sum = 0
     for cube, mutation_list in population:
@@ -51,9 +58,8 @@ def main():
 
     print("Original problem fitness: " + str(problem.fitness))
 
-    best_guy = population[0]
     generations = 0
-    while none_solved(population) and generations < 2:
+    while none_solved(population) and generations < 20:
 
         parents = deepcopy(population)
 
@@ -66,13 +72,8 @@ def main():
 
         #population.extend(parents)
 
-        # sort
-        population = sorted(population, key=lambda pair: (pair[0].fitness,  len(pair[1])))
-
         # selection
-        population = population[:PARENTS]
-
-        best_guy = population[0]
+        population, best_guy = truncation_selection(population)
 
         print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guys_mutation: %s"
               % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
