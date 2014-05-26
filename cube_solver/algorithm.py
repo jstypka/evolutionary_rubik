@@ -1,14 +1,19 @@
 # TODO(vucalur): move cube, rotations and stuff code to a separate package and leave off the alg
 from copy import deepcopy
-from time import sleep
-import random
+from random import shuffle, choice, seed
 
 from cube_solver.cube import Cube
 from cube_solver.mutation import mutations
 
 
-PARENTS = 100
-OFFSPRING = 5000
+PARENTS = 10
+OFFSPRING = 500
+
+def chunks(l, n):
+    """ Yield successive n-sized chunks from l.
+    """
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
 
 
 def none_solved(population):
@@ -17,7 +22,7 @@ def none_solved(population):
 
 def mutate(individuals_and_applied_rotations):
     for cube, mutation_list in individuals_and_applied_rotations:
-        mutation = random.choice(mutations)
+        mutation = choice(mutations)
         before = len(mutation_list)
         for rotation in mutation:
             rotation(cube)
@@ -32,6 +37,21 @@ def truncation_selection(population):
     population = population[:PARENTS]
     best_guy = population[0]
     return population, best_guy
+
+
+def tournament_selection(population):
+    shuffle(population)
+    best_guy = population[0]
+    new_population = []
+    chunk_length = OFFSPRING // PARENTS
+
+    for group in chunks(population, chunk_length):
+        local_best = min(group, key=lambda x: x[0].fitness)
+        if local_best[0].fitness < best_guy[0].fitness:
+            best_guy = local_best
+        new_population.append(local_best)
+
+    return new_population, best_guy
 
 
 def average_mutation_length(population):
@@ -50,7 +70,7 @@ def best_mutation_length(population):
 
 
 def main():
-    random.seed()
+    seed()
     problem = Cube()
     problem.scramble()
 
@@ -73,7 +93,7 @@ def main():
         #population.extend(parents)
 
         # selection
-        population, best_guy = truncation_selection(population)
+        population, best_guy = tournament_selection(population)
 
         print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guys_mutation: %s"
               % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
