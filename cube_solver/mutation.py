@@ -29,13 +29,19 @@ def add_3_other_orientations(orientations):
 add_3_other_orientations(_orientations)
 
 
-# add inverted rotations:
-for k, rotations_mapping in deepcopy(_orientations).items():
-    for k_inner in rotations_mapping.keys():
-        # FIXME: warning - reflection. Dragons be here:
-        inverted_rotation = k_inner + 'i'
-        inv_rot_function = cube_solver.rotation.__dict__[inverted_rotation]
-        _orientations[k][inverted_rotation] = inv_rot_function
+def add_inverted_rotations(orientations):
+    name_by_function = {F: 'F', B: 'B', R: 'R', U: 'U', L: 'L', D: 'D'}
+
+    for k, rotations_mapping in deepcopy(orientations).items():
+        for k_inner, v_inner in rotations_mapping.items():
+            # FIXME: warning - reflection. Dragons be here:
+            inverted_k = k_inner + 'i'
+            inverted_v_name = name_by_function[v_inner] + 'i'
+            inverted_v = cube_solver.rotation.__dict__[inverted_v_name]
+            orientations[k][inverted_k] = inverted_v
+
+
+add_inverted_rotations(_orientations)
 
 _magic_moves = [
     'FRBLULiUBiRiFiLiUiLUi',
@@ -54,15 +60,20 @@ _magic_moves = [
 
 # translate "magic moves" them to a sequence (tuple) of rotate functions to apply.
 # Also take into account symmetrical reflections of these moves:
-mutations = []
-for move in _magic_moves:
-    rotations_of_a_magic_move = re.findall("[A-Z][a-z]?", move)  # split to singe rotations (split on capital letters)
-    for rotations_mapping in _orientations.values():
-        mutation = tuple(rotations_mapping[r] for r in rotations_of_a_magic_move)
-        mutations.append(mutation)
+def add_symmetrical_sequences(magic_moves, orientations):
+    mutations = []
+    for move in magic_moves:
+        rotations_of_a_magic_move = re.findall("[A-Z][a-z]?", move)  # split to singe rotations (split on capital letters)
+        for rotations_mapping in orientations.values():
+            mutation = tuple(rotations_mapping[r] for r in rotations_of_a_magic_move)
+            mutations.append(mutation)
+    return mutations
 
-rotation_to_function_mapping = _orientations['F']
-rotate_functions = list(_orientations['F'].values())
+
+mutations = add_symmetrical_sequences(_magic_moves, _orientations)
+
+rotate_functions = [F, B, R, U, L, D]
+
 
 
 
