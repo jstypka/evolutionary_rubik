@@ -7,8 +7,8 @@ from cube_solver.cube import Cube
 from cube_solver.mutation import mutations
 
 
-PARENTS = 10
-OFFSPRING = 50
+PARENTS = 100
+OFFSPRING = 5000
 
 
 def none_solved(population):
@@ -17,14 +17,21 @@ def none_solved(population):
 
 def mutate(individuals_and_applied_rotations):
     for cube, mutation_list in individuals_and_applied_rotations:
-        print("Before:", len(mutation_list))
         mutation = random.choice(mutations)
+        before = len(mutation_list)
         for rotation in mutation:
             rotation(cube)
             mutation_list.append(rotation.__name__)
-        print("After:", len(mutation_list))
+        if before == len(mutation_list):
+            print("Mutation has not taken place!")
         cube.recalculate_fitness()
 
+
+def truncation_selection(population):
+    population = sorted(population, key=lambda pair: (pair[0].fitness,  len(pair[1])))
+    population = population[:PARENTS]
+    best_guy = population[0]
+    return population, best_guy
 
 
 def average_mutation_length(population):
@@ -34,7 +41,16 @@ def average_mutation_length(population):
     return length_sum / len(population)
 
 
+def best_mutation_length(population):
+    best = 99999
+    for cube, mutation_list in population:
+        if best > len(mutation_list):
+            best = len(mutation_list)
+    return best
+
+
 def main():
+    random.seed()
     problem = Cube()
     problem.scramble()
 
@@ -43,32 +59,26 @@ def main():
     print("Original problem fitness: " + str(problem.fitness))
 
     generations = 0
-    while none_solved(population) and generations < 50:
+    while none_solved(population) and generations < 20:
+
+        parents = deepcopy(population)
 
         # reproduction
         while len(population) < OFFSPRING:
-            population.extend(deepcopy(population))
+            population.extend(deepcopy(parents))
 
         # mutation
-        #print("Before: " + str(average_mutation_length(population)))
         mutate(population)
-        #print("After: " + str(average_mutation_length(population)))
 
-        # sort
-        population = sorted(population, key=lambda pair: pair[0].fitness)
+        #population.extend(parents)
 
         # selection
-        population = population[:PARENTS]
+        population, best_guy = truncation_selection(population)
 
-        best_guy = population[0]
-        print("Generation: %d\tFitness: %d\tMutations: [%s]"
-              % (generations, best_guy[0].fitness, ', '.join(map(str, best_guy[1]))))
-        #print("Generation: %d\tPopulation: %s\tFitness: %d\tAv_mutation: %s"
-        #      % (generations, len(population), lowest_fitness, average_mutation_length(population)))
+        print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guys_mutation: %s"
+              % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
 
         generations += 1
-
-        sleep(1)
 
     print("Solved in %d generations" % generations)
 
