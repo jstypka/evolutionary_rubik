@@ -7,17 +7,16 @@ from cube_solver.mutation import mutations
 
 
 PARENTS = 10
-OFFSPRING = 500
+OFFSPRING = 100
+
 
 def chunks(l, n):
-    """ Yield successive n-sized chunks from l.
-    """
     for i in range(0, len(l), n):
         yield l[i:i+n]
 
 
-def none_solved(population):
-    return not population[0][0].is_solved()  # first element is the best element
+def solved(best_guy):
+    return best_guy[0].fitness == 0
 
 
 def mutate(individuals_and_applied_rotations):
@@ -32,18 +31,18 @@ def mutate(individuals_and_applied_rotations):
         cube.recalculate_fitness()
 
 
-def truncation_selection(population):
+def truncation_selection(population, parents):
     population = sorted(population, key=lambda pair: (pair[0].fitness,  len(pair[1])))
-    population = population[:PARENTS]
+    population = population[:parents]
     best_guy = population[0]
     return population, best_guy
 
 
-def tournament_selection(population):
+def tournament_selection(population, parents, offspring):
     shuffle(population)
     best_guy = population[0]
     new_population = []
-    chunk_length = OFFSPRING // PARENTS
+    chunk_length = offspring // parents
 
     for group in chunks(population, chunk_length):
         local_best = min(group, key=lambda x: x[0].fitness)
@@ -69,39 +68,40 @@ def best_mutation_length(population):
     return best
 
 
-def main():
+def run(parents=PARENTS, offspring=OFFSPRING):
     seed()
     problem = Cube()
     problem.scramble()
 
-    population = [(deepcopy(problem), []) for i in range(PARENTS)]
+    population = [(deepcopy(problem), []) for i in range(parents)]
 
-    print("Original problem fitness: " + str(problem.fitness))
+    #print("Original problem fitness: " + str(problem.fitness))
 
     generations = 0
-    while none_solved(population) and generations < 20:
+    best_guy = population[0]
+    while not solved(best_guy) and generations < 1000:
 
-        parents = deepcopy(population)
+        old_population = deepcopy(population)
 
         # reproduction
-        while len(population) < OFFSPRING:
-            population.extend(deepcopy(parents))
+        while len(population) < offspring:
+            population.extend(deepcopy(old_population))
 
         # mutation
         mutate(population)
 
-        #population.extend(parents)
+        population.extend(old_population)
 
         # selection
-        population, best_guy = tournament_selection(population)
+        population, best_guy = tournament_selection(population, parents, offspring)
 
         print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guys_mutation: %s"
               % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
 
         generations += 1
 
-    print("Solved in %d generations" % generations)
+    #print("Solved in %d generations" % generations)
 
 
 if __name__ == "__main__":
-    main()
+    run()
