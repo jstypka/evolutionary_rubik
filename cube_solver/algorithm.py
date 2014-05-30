@@ -38,19 +38,19 @@ def truncation_selection(population, parents):
     return population, best_guy
 
 
-def tournament_selection(population, parents, offspring):
+def tournament_selection(population, parents):
     shuffle(population)
-    best_guy = population[0]
+    global_best = population[0]
     new_population = []
-    chunk_length = offspring // parents
+    chunk_length = parents
 
     for group in chunks(population, chunk_length):
         local_best = min(group, key=lambda x: x[0].fitness)
-        if local_best[0].fitness < best_guy[0].fitness:
-            best_guy = local_best
+        if local_best[0].fitness < global_best[0].fitness:
+            global_best = local_best
         new_population.append(local_best)
 
-    return new_population, best_guy
+    return new_population, global_best
 
 
 def average_mutation_length(population):
@@ -93,7 +93,7 @@ def run(parents=PARENTS, offspring=OFFSPRING):
         population.extend(old_population)
 
         # selection
-        population, best_guy = tournament_selection(population, parents, offspring)
+        population, best_guy = tournament_selection(population, parents)
 
         print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guys_mutation: %s"
               % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
