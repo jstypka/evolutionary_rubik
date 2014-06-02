@@ -1,5 +1,5 @@
 from cube_solver.enums import Edge
-from cube_solver.utils import rotate_face, cycle_4
+from cube_solver.rotation_utils import rotate_face, cycle_4
 
 
 A = 'A'

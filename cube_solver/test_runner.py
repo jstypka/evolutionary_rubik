@@ -1,9 +1,12 @@
-from cube_solver.algorithm import run
 from time import clock
+
+from cube_solver.algorithm import run
+
 
 REPETITIONS = 10
 PARENTS = [10, 20, 50]
 OFFSPRING = [100, 200, 500]
+
 
 def main():
     results = dict()

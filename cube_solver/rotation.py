@@ -1,5 +1,5 @@
 from cube_solver.enums import Edge
-from cube_solver.utils import rotate_face, cycle_4
+from cube_solver.rotation_utils import rotate_face, cycle_4
 
 
 def _F(cube, clockwise=True):
@@ -56,7 +56,7 @@ def _D(cube, clockwise=True):
     )
 
 
-# TODO(vucalur): refactor error-prone copy-paste. OCaml high order functions would be handy ...
+# TODO(vucalur): refactor this error-prone copy-paste. Currying would be handy
 def F(cube):
     _F(cube)
 
