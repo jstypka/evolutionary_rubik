@@ -12,7 +12,7 @@ OFFSPRING = 100
 
 def chunks(l, n):
     for i in range(0, len(l), n):
-        yield l[i:i+n]
+        yield l[i:i + n]
 
 
 def solved(best_guy):
@@ -32,7 +32,7 @@ def mutate(individuals_and_applied_rotations):
 
 
 def truncation_selection(population, parents):
-    population = sorted(population, key=lambda pair: (pair[0].fitness,  len(pair[1])))
+    population = sorted(population, key=lambda pair: (pair[0].fitness, len(pair[1])))
     population = population[:parents]
     best_guy = population[0]
     return population, best_guy
@@ -68,12 +68,15 @@ def best_mutation_length(population):
     return best
 
 
-def run(parents=PARENTS, offspring=OFFSPRING):
+def run(problem=None, parents=PARENTS, offspring=OFFSPRING, use_tournament_selection=False):
     seed()
-    problem = Cube()
-    problem.scramble()
+    if problem is None:
+        problem = Cube()
+        problem.scramble()
 
     population = [(deepcopy(problem), []) for i in range(parents)]
+
+    selection_fn = tournament_selection if use_tournament_selection else truncation_selection
 
     #print("Original problem fitness: " + str(problem.fitness))
 
@@ -93,14 +96,16 @@ def run(parents=PARENTS, offspring=OFFSPRING):
         population.extend(old_population)
 
         # selection
-        population, best_guy = tournament_selection(population, parents)
+        population, best_guy = selection_fn(population, parents)
 
-        print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guys_mutation: %s"
-              % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
+        # print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guy's_rotations_count: %s"
+        #       % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
 
         generations += 1
 
     #print("Solved in %d generations" % generations)
+
+    return generations, len(best_guy[1])
 
 
 if __name__ == "__main__":
