@@ -10,6 +10,25 @@ PARENTS = 10
 OFFSPRING = 100
 
 
+def calc_compression(solution_original):
+    solution = deepcopy(solution_original)
+
+    has_changed = True
+    while has_changed:
+        has_changed = False
+        i = 0
+        while i < len(solution) - 1:
+            a = solution[i]
+            b = solution[i + 1]
+            if a + 'i' == b or a == b + 'i':
+                solution.pop(i)
+                solution.pop(i + 1)
+                has_changed = True
+            i += 1
+
+    return (len(solution_original) - len(solution)) / len(solution_original)
+
+
 def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
@@ -104,8 +123,7 @@ def run(problem=None, parents=PARENTS, offspring=OFFSPRING, use_tournament_selec
         generations += 1
 
     #print("Solved in %d generations" % generations)
-
-    return generations, len(best_guy[1])
+    return generations, len(best_guy[1]), calc_compression(best_guy[1])
 
 
 if __name__ == "__main__":

@@ -38,22 +38,24 @@ def main():
                 times = []
                 generations = []
                 rotations_count = []
+                compression = []
                 for i in range(REPETITIONS):
                     start = time.process_time()
-                    _generations, _rotations_count = run(problem, parents, offspring, use_tournament_selection=is_tournament)
+                    _generations, _rotations_count, _compression = run(problem, parents, offspring, use_tournament_selection=is_tournament)
                     end = time.process_time()
                     times.append(end - start)
                     generations.append(_generations)
                     rotations_count.append(_rotations_count)
-                results[is_tournament][parents][offspring] = (avg(times), avg(generations), avg(rotations_count))
+                    compression.append(_compression)
+                results[is_tournament][parents][offspring] = (avg(times), avg(generations), avg(rotations_count), avg(compression))
                 print(str(parents) + "," + str(offspring) + ": " + str(avg(times)))
 
     print('#' * 80 + '\n' * 2)
-    print("is_tournament parents offspring time[s] generations rotations_count\n")
+    print("is_tournament parents offspring time[s] generations rotations_count compression\n")
     for is_tournament, v1 in results.items():
         for parents, v2 in v1.items():
             for offspring, v3 in v2.items():
-                print("%s\t%d\t%d\t%f\t%d\t%d" % (str(is_tournament), parents, offspring, v3[0], v3[1], v3[2]))
+                print("%s\t%d\t%d\t%f\t%d\t%d" % (str(is_tournament), parents, offspring, v3[0], v3[1], v3[2], v3[3]))
 
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ class Cube:
     # def __ne__(self, obj):
     #     return not self == obj
 
-    def scramble(self, moves=30):
+    def scramble(self, moves=70):
         for i in range(moves):
             random.choice(rotate_functions)(self)
         self.recalculate_fitness()
