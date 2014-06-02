@@ -11,9 +11,8 @@ PARENTS = 10
 OFFSPRING = 100
 
 
-def calc_compression(solution_original):
+def compressed(solution_original):
     solution = deepcopy(solution_original)
-
     has_changed = True
     while has_changed:
         has_changed = False
@@ -22,10 +21,16 @@ def calc_compression(solution_original):
             a = solution[i]
             b = solution[i + 1]
             if a + 'i' == b or a == b + 'i':
-                solution.pop(i)
                 solution.pop(i + 1)
+                solution.pop(i)
                 has_changed = True
+                i -= 2
             i += 1
+    return solution
+
+
+def calc_compression(solution_original):
+    solution = compressed(solution_original)
 
     return (len(solution_original) - len(solution)) / len(solution_original)
 
