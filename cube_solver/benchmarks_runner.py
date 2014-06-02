@@ -41,12 +41,17 @@ def main():
                 compression = []
                 for i in range(REPETITIONS):
                     start = time.process_time()
-                    _generations, _rotations_count, _compression = run(problem, parents, offspring, use_tournament_selection=is_tournament)
+                    result = None
+                    successful = False
+                    while not successful:
+                        result = run(problem, parents, offspring, use_tournament_selection=is_tournament)
+                        if result is not None:
+                            successful = True
                     end = time.process_time()
                     times.append(end - start)
-                    generations.append(_generations)
-                    rotations_count.append(_rotations_count)
-                    compression.append(_compression)
+                    generations.append(result[0])
+                    rotations_count.append(result[1])
+                    compression.append(result[2])
                 results[is_tournament][parents][offspring] = (avg(times), avg(generations), avg(rotations_count), avg(compression))
                 print(str(parents) + "," + str(offspring) + ": " + str(avg(times)))
 

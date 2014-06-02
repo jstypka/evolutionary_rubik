@@ -5,6 +5,7 @@ from random import shuffle, choice, seed
 from cube_solver.cube import Cube
 from cube_solver.mutation import mutations
 
+MAX_GENERATIONS = 200
 
 PARENTS = 10
 OFFSPRING = 100
@@ -101,7 +102,7 @@ def run(problem=None, parents=PARENTS, offspring=OFFSPRING, use_tournament_selec
 
     generations = 0
     best_guy = population[0]
-    while not solved(best_guy) and generations < 1000:
+    while not solved(best_guy) and generations < MAX_GENERATIONS:
 
         old_population = deepcopy(population)
 
@@ -117,13 +118,16 @@ def run(problem=None, parents=PARENTS, offspring=OFFSPRING, use_tournament_selec
         # selection
         population, best_guy = selection_fn(population, parents)
 
-        # print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guy's_rotations_count: %s"
-        #       % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
+        print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guy's_rotations_count: %s"
+              % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
 
         generations += 1
 
-    #print("Solved in %d generations" % generations)
-    return generations, len(best_guy[1]), calc_compression(best_guy[1])
+    if generations == MAX_GENERATIONS:
+        return None
+    else:
+        #print("Solved in %d generations" % generations)
+        return generations, len(best_guy[1]), calc_compression(best_guy[1])
 
 
 if __name__ == "__main__":
