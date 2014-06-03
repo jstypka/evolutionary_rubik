@@ -60,7 +60,7 @@ def main():
     for is_tournament, v1 in results.items():
         for parents, v2 in v1.items():
             for offspring, v3 in v2.items():
-                print("%s\t%d\t%d\t%f\t%d\t%d" % (str(is_tournament), parents, offspring, v3[0], v3[1], v3[2], v3[3]))
+                print("%s\t%d\t%d\t%f\t%f\t%f\t%f" % (str(is_tournament), parents, offspring, v3[0], v3[1], v3[2], v3[3]))
 
 
 if __name__ == "__main__":
