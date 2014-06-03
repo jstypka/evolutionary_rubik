@@ -146,49 +146,46 @@ The idea is to... \todo{TODO}
 \subsection{Parameters}
 Basic parameters describing an evolutionary strategy are $(\mu, \lambda)$. The former defines the number of parents i.e. individuals selected from a population to give birth to another generation, while the latter parameter denotes offspring, that is the number of individuals generated from the previous population (parents).
 
-Tests have been run to determine an optimal combination of $(\mu, \lambda)$ to carry out subsequent tests. Each value is an average of 10 different runs in order to gain statistical significance. The results are presented in the table \ref{table:params}.\todo{To fill!}
+During various tests run for the purpose of the experiment, we have empirically established a range of values, where the performance of the algorithm is the best. The program generally yielded better results for smaller values of $(\mu, \lambda)$, therefore we decided to take advantage of these observations to run our tests.
 
-\begin{table}[h]
-\centering
-\caption{ $(\mu, \lambda)$ parameters}
-\label{table:params}
-\begin{tabular}{c|c|c|c}
-& \textbf{10} & \textbf{20} & \textbf{50} \\
-\hline
-\textbf{100} & 12 & 14 & 15 \\
-\hline
-\textbf{200} & 12 & 14 & 15 \\
-\hline
-\textbf{500} & 12 & 14 & 15\\
-\end{tabular}
-\end{table}
+In order to ensure the lack of correlation between a specific combination of $(\mu, \lambda)$ and our results, we took  $(\mu, \lambda) = \{(x,y) : x \in \{1,2..3\} \wedge y \in \{5,6..7\}\}$. This also enables us to compare the influence of the parameters on the performance.
 
-The results indicate that pairs $(\mu, \lambda) = \{(x,y) : x \in \{1,2..3\} \wedge y \in \{5,6..7\}\}$ give the best performance, thus these values have been chosen for further testing.
+The same tests have been run twice on different computers, using different measuring techniques. This restricts our ability to draw conclusions from absolute numbers, however we are still able to compare relative values.
 
 \subsection{Tournament selection}
 
-Tests have been carried out to determine the behaviour of the algorithm, depending on the chosen selection and $(\mu, \lambda)$. The results are presented in tables \ref{table:elitist}, \ref{table:tournament}.
+Tests have been carried out to determine the behaviour of the algorithm, depending on the chosen selection type and $(\mu, \lambda)$. Moreover two different measuring techniques were used.
+
+The algorithm tends to occasionally get stuck on one fitness value and further computations (no matter how long) do not improve the final result, forcing the program to end computations after a fixed amount of generations. In order to overcome this obvious drawback and learn about its relation to the selection methods, we have chosen to implement two ways of time measurement.
+
+First method measures only the \textit{valid} runs i.e. the ones, when the algorithm has been successful in solving the cube and ended correctly. This approach however ignores all the executions, where the program was unable to solve the problem and these can vary depending on our selection method. Therefore another time measurement technique has been introduced, this time also including the \textit{invalid} runs i.e. the ones where the cube has not been solved and the program has been forced to end further computations. These tests have been run also on different machines, thus will be presented and discussed separately.
+
+First method yielded results presented in tables \ref{table:valid_elitist_tests} and \ref{table:valid_tournament_tests}.
 
 \begin{table}[h]
 \centering
 \caption{Elitist selection}
-\label{table:elitist}
+\label{table:valid_elitist_tests}
 \subfloat[Average time]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
   \hline
-  \textbf{100} & 12 & 14 \\
+  \textbf{10} & 21.95 & 20.31 & 34.50\\
   \hline
-  \textbf{200} & 12 & 14 \\
+  \textbf{20} & 23.34 & 29.17 & 42.95\\
+  \hline
+  \textbf{50} & 43.06 & 37.74 & 52.83\\
   \end{tabular}
 }
 \subfloat[Generations]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
   \hline
-  \textbf{100} & 12 & 14 \\
+  \textbf{10} & 70.40 & 34.53 & 29.93\\
   \hline
-  \textbf{200} & 12 & 14 \\
+  \textbf{20} & 75.47 & 49.07 & 31.13\\
+  \hline
+  \textbf{50} & 146.47 & 65.8 & 37.80\\
   \end{tabular}
 }
 \end{table}
@@ -196,28 +193,97 @@ Tests have been carried out to determine the behaviour of the algorithm, dependi
 \begin{table}[h]
 \centering
 \caption{Tournament selection}
-\label{table:tournament}
+\label{table:valid_tournament_tests}
 \subfloat[Average time]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
   \hline
-  \textbf{100} & 12 & 14 \\
+  \textbf{10} & 28.13 & 37.95 & 75.85\\
   \hline
-  \textbf{200} & 12 & 14 \\
+  \textbf{20} & 31.09 & 36.20 & 52.28\\
+  \hline
+  \textbf{50} & 27.16 & 41.85 & 65.70\\
   \end{tabular}
 }
 \subfloat[Generations]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
   \hline
-  \textbf{100} & 12 & 14 \\
+  \textbf{10} & 88.93 & 61.33 & 49.33\\
   \hline
-  \textbf{200} & 12 & 14 \\
+  \textbf{20} & 102.4 & 60.27 & 36.73\\
+  \hline
+  \textbf{50} & 87.13 & 69.40 & 45.93\\
   \end{tabular}
 }
 \end{table}
 
-The results show...
+The results clearly indicate a better performance for the elitist selection algorithm both in terms of time and the amount of generations. The numbers however include only the 
+\textit{valid} runs, discarding the cubes impossible for the algorithm to solve.
+
+The results including all executions are presented in tables \ref{table:invalid_elitist_tests} and \ref{table:invalid_tournament_tests}.
+
+\begin{table}[h]
+\centering
+\caption{Elitist selection}
+\label{table:invalid_elitist_tests}
+\subfloat[Average time]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 53.48 & 75.61 & 383.12\\
+  \hline
+  \textbf{20} & 89.49 & 95.67 & 111.70\\
+  \hline
+  \textbf{50} & 52.54 & 38.41 & 124.30\\
+  \end{tabular}
+}
+\subfloat[Generations]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 58.50 & 39.10 & 27.60\\
+  \hline
+  \textbf{20} & 98.70 & 57.30 & 35.90\\
+  \hline
+  \textbf{50} & 104.6 & 85.40 & 44.20\\
+  \end{tabular}
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Tournament selection}
+\label{table:invalid_tournament_tests}
+\subfloat[Average time]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 46.94 & 55.38 & 147.17\\
+  \hline
+  \textbf{20} & 42.88 & 86.63 & 176.63\\
+  \hline
+  \textbf{50} & 35.55 & 54.31 & 54.32\\
+  \end{tabular}
+}
+\subfloat[Generations]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 97.50 & 76.00 & 56.10\\
+  \hline
+  \textbf{20} & 97.60 & 81.10 & 45.10\\
+  \hline
+  \textbf{50} & 85.90 & 68.70 & 40.00\\
+  \end{tabular}
+}
+\end{table}
+
+These numbers, on the other hand, show a better result of the tournament selection in terms of time, but favor elitist method regarding the number of generations needed to solve the cube. This might be expected, because the elitist method involves sorting and is therefore slightly slower, but the results differ widely from the previous tests.
+
+This is probably due the difference in the measurement method and is more thoroughly discussed at the end of the paper. Elitist selection seems to be more vulnerable to the possibility of getting stuck and statistically is unable to solve a cube much more often. This is why it is slower when counting all executions, but shines when counting just the valid ones.
+
+The tournament selection however does not perform better in solving the cube, but is less likely to get stuck during the computation and gives better results when counting all executions. The attempt to explain this phenomenon can be found in the final section of the article.
 
 \subsection{Solution reduction}
 
