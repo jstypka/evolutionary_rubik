@@ -102,7 +102,7 @@ To take mirrors into account when performing a new mutation:
 Altogether we have \(12*6*4 = 288\) possible mutations
 
 \subsection{Fitness calculation}
-Three qualities q1,q2, q3 are defined:
+Three qualities q1, q2, q3 are defined:
 \begin{itemize}
 \item q1 is increased by 1 for each facelet whose color differs from the center facelet on the same face
 \item q2 is increased by 4 for each wrong positioned edge, orientation is not considered
@@ -148,7 +148,7 @@ Basic parameters describing an evolutionary strategy are $(\mu, \lambda)$. The f
 
 During various tests run for the purpose of the experiment, we have empirically established a range of values, where the performance of the algorithm is the best. The program generally yielded better results for smaller values of $(\mu, \lambda)$, therefore we decided to take advantage of these observations to run our tests.
 
-In order to ensure the lack of correlation between a specific combination of $(\mu, \lambda)$ and our results, we took  $(\mu, \lambda) = \{(x,y) : x \in \{1,2..3\} \wedge y \in \{5,6..7\}\}$. This also enables us to compare the influence of the parameters on the performance.
+In order to ensure the lack of correlation between a specific combination of $(\mu, \lambda)$ and our results, we took  $(\mu, \lambda) = \{(x,y) : x \in \{10, 20, 50\} \wedge y \in \{100, 200, 500\}\}$. This also enables us to compare the influence of the parameters on the performance.
 
 The same tests have been run twice on different computers, using different measuring techniques. This restricts our ability to draw conclusions from absolute numbers, however we are still able to compare relative values.
 
@@ -295,7 +295,7 @@ The purpose of this study was to implement and possibly enhance the original Her
 
 Tests analyzing the performance of various methods of selection have been carried out on two machines and using two different measuring approaches. In the first case only the valid runs have been taken into account, while the second method measured all of the executions, including the ones which have timed out. Results indicated, that the tournament selection is much more immune to becoming halted by an unfortunate cube configuration, however it is outperformed in the case when only valid runs are considered. It is also slightly faster in terms of pure speed (time needed to increment the population, not the fitness convergence) due to its lack of sorting.
 
-This phenomenon might be caused by the variety of population, which seems to be smothered by the elitist selection. By selecting only the narrow group of global champions in each generation, the population quickly becomes very homogenous and it is more and more difficoult to create a solution varying significantly from the others. Tournament selection on the other hand enables occasional advancements of weaker individuals, which can outperform the rest of the population in future generations. This ability makes also the algorithm less vulnerable to becoming halted by an unfortunate cube configuration.
+This phenomenon might be caused by the variety of population, which seems to be smothered by the elitist selection. By selecting only the narrow group of global champions in each generation, the population quickly becomes very homogenous and it is more and more difficult to create a solution varying significantly from the others. Tournament selection on the other hand enables occasional advancements of weaker individuals, which can outperform the rest of the population in future generations. This ability makes also the algorithm less vulnerable to becoming halted by an unfortunate cube configuration.
 
 ... \todo{o skracaniu osobników}
 
