@@ -9,7 +9,7 @@
 \setlength{\parindent}{0cm}
 \setlength{\parskip}{3mm plus1mm minus1mm}
 
-\title{Evolutionary approach for solving the Rubik’s cube}
+\title{Evolutionary approach for solving the Rubik’s Cube}
 
 \author{Wojciech Krzystek, Jan Stypka}
 
@@ -99,14 +99,14 @@ To take mirrors into account when performing a new mutation:
 \item The face of the cube for which the sequence will be applied is chosen randomly (6 possibilities).
 \item Next, the orientation of the cube is chosen (4 possibilities, each achieved by rotating the whole cube 0, 1, 2, or 3 quarter-turns clockwise).
 \end{enumerate}
-Altogether we have \(12*6*4 = 288\) possible mutations
+Altogether we have $ 12\cdot6\cdot4 = 288 $ possible mutations
 
 \subsection{Fitness calculation}
-Three qualities q1, q2, q3 are defined:
+Three qualities $ q1 $, $ q2 $, $ q3 $ are introduced:
 \begin{itemize}
-\item q1 is increased by 1 for each facelet whose color differs from the center facelet on the same face
-\item q2 is increased by 4 for each wrong positioned edge, orientation is not considered
-\item q3 is increased by 6 for each wrong positioned corner, orientation is not considered
+\item $ q1 $ is increased by 1 for each facelet whose color differs from the center facelet on the same face
+\item $ q2 $ is increased by 4 for each wrong positioned edge, orientation is not considered
+\item $ q3 $ is increased by 6 for each wrong positioned corner, orientation is not considered
 \end{itemize}
 Fitness is a sum of those 3 components. The lower the fitness = the better. Solved cube has fitness 0.
 
@@ -123,7 +123,7 @@ This kind of selection guarantees preserving the best individuals, but has a neg
 \section{Implemented enhancements}
 We propose two enhancements to the described algorithm. The first is a little more complex tournament selection described in the subchapter below and the second one is an attempt to shrink developed solutions, which can be very long.
 
-For all enhancements appropriate tests have been performed with the results presented after each subchapter.
+For all enhancements appropriate tests have been performed with the results presented in a separate chapter.
 
 \subsection{Tournament selection}
 This kind of selection is slightly more complex than a basic elitist selection. It consists of three basic steps:
@@ -138,11 +138,14 @@ However, this method in certain circumstances enables the selection of worse ind
 This selection strategy also does not involve sorting and may perform better in terms of pure calculation speed.
 
 \subsection{Solution reduction}
-The other enhancement is an attempt to reduce the length of possible solutions. After each mutation an additional sequence is concatenated to the previous result yielding very long strings after certain period of time.
+Second enhancement is an attempt to reduce the length of possible solutions. After each mutation an additional sequence of rotations is concatenated to the previous result yielding very long solutions after certain number of generations.
 
-The idea is to... \todo{TODO}
+The only possibility of reducing the length of solution without introducing significant chances to the algorithm itself itself,
+is to use the fact that 2 consecutive rotations in the opposite directions, performed on the same cube wall can be reduced to no rotation.
 
-\section{Test results}
+e.g. a sequence of rotations: 'LLBBiLiUiUR' can be reduced to: 'LR', however this is an extreme case: results indicate that this strategy reduces no more but by $5\%$.
+
+\section{Tests}
 \subsection{Parameters}
 Basic parameters describing an evolutionary strategy are $(\mu, \lambda)$. The former defines the number of parents i.e. individuals selected from a population to give birth to another generation, while the latter parameter denotes offspring, that is the number of individuals generated from the previous population (parents).
 
@@ -152,15 +155,26 @@ In order to ensure the lack of correlation between a specific combination of $(\
 
 The same tests have been run twice on different computers, using different measuring techniques. This restricts our ability to draw conclusions from absolute numbers, however we are still able to compare relative values.
 
-\subsection{Tournament selection}
 
-Tests have been carried out to determine the behaviour of the algorithm, depending on the chosen selection type and $(\mu, \lambda)$. Moreover two different measuring techniques were used.
+\subsection{Two possible approaches of measuring performance}
+Tests have been carried out to determine the behaviour of the algorithm, depending on the chosen selection type and $(\mu, \lambda)$. Moreover two different measuring techniques were used:
 
-The algorithm tends to occasionally get stuck on one fitness value and further computations (no matter how long) do not improve the final result, forcing the program to end computations after a fixed amount of generations. In order to overcome this obvious drawback and learn about its relation to the selection methods, we have chosen to implement two ways of time measurement.
+Since a lot of executions of the algorithm tend to settle in a local optimum (most often with fitness ranging from $10$ to $30$)
+and further computations (no matter how long) do not improve the final result, a limitation of iterations was introduced.
+If the problem is not solved in this reasonable number of iterations, current execution of the algorithm is aborted and reattempted.
+In order to overcome this obvious drawback and learn about its relation to the selection methods, we have chosen to implement two ways of time measurement:
+\begin{itemize}
+	\item	include \textit{invalid} runs: Since we need to make 10 successful runs, failed (stuck in a local optimum) runs are aborted,
+			but time needed to perform this aborted run is added to the time of those 10 successful runs. It's ''fair'', since it matters if
+			an algorithm can find a solution after 30 iterations, but more than a half of its runs end up as being aborted and the other algorithm
+			is capable of finding a solution after 60 iterations, but only $10\%$ of its runs have to be terminated.
+	\item measure only \textit{valid} runs: Measure only the time needed to make 10 successfull runs. In this method it doesn't matter how many times the algorithm had to be aborted.
+\end{itemize}
 
-First method measures only the \textit{valid} runs i.e. the ones, when the algorithm has been successful in solving the cube and ended correctly. This approach however ignores all the executions, where the program was unable to solve the problem and these can vary depending on our selection method. Therefore another time measurement technique has been introduced, this time also including the \textit{invalid} runs i.e. the ones where the cube has not been solved and the program has been forced to end further computations. These tests have been run also on different machines, thus will be presented and discussed separately.
+Two methods have been compared using different machines, thus will be presented and discussed separately.
 
-First method yielded results presented in tables \ref{table:valid_elitist_tests} and \ref{table:valid_tournament_tests}.
+
+\subsubsection{Only \textit{valid} runs}
 
 \begin{table}[h]
 \centering
@@ -190,6 +204,7 @@ First method yielded results presented in tables \ref{table:valid_elitist_tests}
 }
 \end{table}
 
+
 \begin{table}[h]
 \centering
 \caption{Tournament selection}
@@ -218,8 +233,11 @@ First method yielded results presented in tables \ref{table:valid_elitist_tests}
 }
 \end{table}
 
-The results clearly indicate a better performance for the elitist selection algorithm both in terms of time and the amount of generations. The numbers however include only the 
+The results clearly indicate a better performance for the elitist selection algorithm both in terms of time and the amount of generations. The numbers however include only the
 \textit{valid} runs, discarding the cubes impossible for the algorithm to solve.
+
+\pagebreak
+\subsubsection{Also \textit{invalid} runs}
 
 The results including all executions are presented in tables \ref{table:invalid_elitist_tests} and \ref{table:invalid_tournament_tests}.
 
