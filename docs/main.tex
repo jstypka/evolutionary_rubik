@@ -9,7 +9,7 @@
 \setlength{\parindent}{0cm}
 \setlength{\parskip}{3mm plus1mm minus1mm}
 
-\title{Evolutionary approach for solving the Rubik’s cube}
+\title{Evolutionary approach for solving the Rubik’s Cube}
 
 \author{Wojciech Krzystek, Jan Stypka}
 
@@ -99,14 +99,14 @@ To take mirrors into account when performing a new mutation:
 \item The face of the cube for which the sequence will be applied is chosen randomly (6 possibilities).
 \item Next, the orientation of the cube is chosen (4 possibilities, each achieved by rotating the whole cube 0, 1, 2, or 3 quarter-turns clockwise).
 \end{enumerate}
-Altogether we have \(12*6*4 = 288\) possible mutations
+Altogether we have $ 12\cdot6\cdot4 = 288 $ possible mutations
 
 \subsection{Fitness calculation}
-Three qualities q1,q2, q3 are defined:
+Three qualities $ q1 $, $ q2 $, $ q3 $ are introduced:
 \begin{itemize}
-\item q1 is increased by 1 for each facelet whose color differs from the center facelet on the same face
-\item q2 is increased by 4 for each wrong positioned edge, orientation is not considered
-\item q3 is increased by 6 for each wrong positioned corner, orientation is not considered
+\item $ q1 $ is increased by 1 for each facelet whose color differs from the center facelet on the same face
+\item $ q2 $ is increased by 4 for each wrong positioned edge, orientation is not considered
+\item $ q3 $ is increased by 6 for each wrong positioned corner, orientation is not considered
 \end{itemize}
 Fitness is a sum of those 3 components. The lower the fitness = the better. Solved cube has fitness 0.
 
@@ -123,7 +123,7 @@ This kind of selection guarantees preserving the best individuals, but has a neg
 \section{Implemented enhancements}
 We propose two enhancements to the described algorithm. The first is a little more complex tournament selection described in the subchapter below and the second one is an attempt to shrink developed solutions, which can be very long.
 
-For all enhancements appropriate tests have been performed with the results presented after each subchapter.
+For all enhancements appropriate tests have been performed with the results presented in a separate chapter.
 
 \subsection{Tournament selection}
 This kind of selection is slightly more complex than a basic elitist selection. It consists of three basic steps:
@@ -138,11 +138,14 @@ However, this method in certain circumstances enables the selection of worse ind
 This selection strategy also does not involve sorting and may perform better in terms of pure calculation speed.
 
 \subsection{Solution reduction}
-The other enhancement is an attempt to reduce the length of possible solutions. After each mutation an additional sequence is concatenated to the previous result yielding very long strings after certain period of time.
+Second enhancement is an attempt to reduce the length of possible solutions. After each mutation an additional sequence of rotations is concatenated to the previous result yielding very long solutions after certain number of generations.
 
-The idea is to... \todo{TODO}
+The only possibility of reducing the length of solution without introducing significant chances to the algorithm itself itself,
+is to use the fact that 2 consecutive rotations in the opposite directions, performed on the same cube wall can be reduced to no rotation.
 
-\section{Test results}
+e.g. a sequence of rotations: 'LLBBiLiUiUR' can be reduced to: 'LR', however this is an extreme case: results indicate that this strategy reduces no more but by $5\%$.
+
+\section{Tests}
 \subsection{Parameters}
 Basic parameters describing an evolutionary strategy are $(\mu, \lambda)$. The former defines the number of parents i.e. individuals selected from a population to give birth to another generation, while the latter parameter denotes offspring, that is the number of individuals generated from the previous population (parents).
 
@@ -153,71 +156,95 @@ Tests have been run to determine an optimal combination of $(\mu, \lambda)$ to c
 \caption{ $(\mu, \lambda)$ parameters}
 \label{table:params}
 \begin{tabular}{c|c|c|c}
-& \textbf{10} & \textbf{20} & \textbf{50} \\
+& \textbf{100} & \textbf{200} & \textbf{500} \\
 \hline
-\textbf{100} & 12 & 14 & 15 \\
+\textbf{10} & 12 & 12 & 12 \\
 \hline
-\textbf{200} & 12 & 14 & 15 \\
+\textbf{20} & 14 & 14 & 14 \\
 \hline
-\textbf{500} & 12 & 14 & 15\\
+\textbf{50} & 15 & 15 & 15\\
 \end{tabular}
 \end{table}
 
 The results indicate that pairs $(\mu, \lambda) = \{(x,y) : x \in \{1,2..3\} \wedge y \in \{5,6..7\}\}$ give the best performance, thus these values have been chosen for further testing.
 
-\subsection{Tournament selection}
-
 Tests have been carried out to determine the behaviour of the algorithm, depending on the chosen selection and $(\mu, \lambda)$. The results are presented in tables \ref{table:elitist}, \ref{table:tournament}.
+
+
+\subsection{Two possible approaches of measuring performance}
+Since a lot of executions of the algorithm tend to settle in a local optimum (most often with fitness ranging from $10$ to $30$)
+and not progress any further even after significant number of iterations, a limitation of iterations was introduced.
+If the problem is not solved in this reasonable number of iterations, current evecution of the algorithm is aborted and reattempted.
+2 approaches of masuring time performance are:
+\begin{itemize}
+	\item	take aborted runs into account: Since we need to make 10 successful runs, failed (stuck in a local optimum) runs are aborted,
+			but time needed to perform this aborted run is added to the time of those 10 successful runs. It's ''fair'', since it matters if
+			an algorithm can find a solution after 30 iterations, but more than a half of its runs end up as being aborted and the other algorithm
+			is capable of finding a solution after 60 iterations, but only $10\%$ of its runs have to be terminated.
+	\item   do not take aborted runs into account: Measure only the time needed to make 10 successfull runs.
+\end{itemize}
+
+\subsection{Elitist selection}
 
 \begin{table}[h]
 \centering
 \caption{Elitist selection}
 \label{table:elitist}
 \subfloat[Average time]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
-  \hline
-  \textbf{100} & 12 & 14 \\
-  \hline
-  \textbf{200} & 12 & 14 \\
+	\begin{tabular}{c|c|c|c}
+	& \textbf{100} & \textbf{200} & \textbf{500} \\
+	\hline
+	\textbf{10} & 12 & 12 & 12 \\
+	\hline
+	\textbf{20} & 14 & 14 & 14 \\
+	\hline
+	\textbf{50} & 15 & 15 & 15\\
   \end{tabular}
 }
 \subfloat[Generations]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
-  \hline
-  \textbf{100} & 12 & 14 \\
-  \hline
-  \textbf{200} & 12 & 14 \\
+	\begin{tabular}{c|c|c|c}
+	& \textbf{100} & \textbf{200} & \textbf{500} \\
+	\hline
+	\textbf{10} & 12 & 12 & 12 \\
+	\hline
+	\textbf{20} & 14 & 14 & 14 \\
+	\hline
+	\textbf{50} & 15 & 15 & 15\\
   \end{tabular}
 }
 \end{table}
+
+
+\subsection{Tournament selection}
 
 \begin{table}[h]
 \centering
 \caption{Tournament selection}
 \label{table:tournament}
 \subfloat[Average time]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
-  \hline
-  \textbf{100} & 12 & 14 \\
-  \hline
-  \textbf{200} & 12 & 14 \\
+	\begin{tabular}{c|c|c|c}
+	& \textbf{100} & \textbf{200} & \textbf{500} \\
+	\hline
+	\textbf{10} & 12 & 12 & 12 \\
+	\hline
+	\textbf{20} & 14 & 14 & 14 \\
+	\hline
+	\textbf{50} & 15 & 15 & 15\\
   \end{tabular}
 }
 \subfloat[Generations]{
-  \begin{tabular}{c|c|c}
-  & \textbf{10} & \textbf{20} \\
-  \hline
-  \textbf{100} & 12 & 14 \\
-  \hline
-  \textbf{200} & 12 & 14 \\
+	\begin{tabular}{c|c|c|c}
+	& \textbf{100} & \textbf{200} & \textbf{500} \\
+	\hline
+	\textbf{10} & 12 & 12 & 12 \\
+	\hline
+	\textbf{20} & 14 & 14 & 14 \\
+	\hline
+	\textbf{50} & 15 & 15 & 15\\
   \end{tabular}
 }
 \end{table}
 
-The results show...
 
 \subsection{Solution reduction}
 
