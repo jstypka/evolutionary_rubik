@@ -140,10 +140,10 @@ This selection strategy also does not involve sorting and may perform better in 
 \subsection{Solution reduction}
 Second enhancement is an attempt to reduce the length of possible solutions. After each mutation an additional sequence of rotations is concatenated to the previous result yielding very long solutions after certain number of generations.
 
-The only possibility of reducing the length of solution without introducing significant chances to the algorithm itself itself,
+The only possibility of reducing the length of solution without introducing significant chances to the algorithm itself,
 is to use the fact that 2 consecutive rotations in the opposite directions, performed on the same cube wall can be reduced to no rotation.
 
-e.g. a sequence of rotations: 'LLBBiLiUiUR' can be reduced to: 'LR', however this is an extreme case: results indicate that this strategy reduces no more but by $5\%$.
+e.g. a sequence of rotations: 'LLBBiLiUiUR' can be reduced to: 'LR', however this is an extreme case: results indicate that this strategy can reduce solution by no more than $5\%$.
 
 \section{Tests}
 \subsection{Parameters}
@@ -160,7 +160,7 @@ The same tests have been run twice on different computers, using different measu
 Tests have been carried out to determine the behaviour of the algorithm, depending on the chosen selection type and $(\mu, \lambda)$. Moreover two different measuring techniques were used:
 
 Since a lot of executions of the algorithm tend to settle in a local optimum (most often with fitness ranging from $10$ to $30$)
-and further computations (no matter how long) do not improve the final result, a limitation of iterations was introduced.
+and further computations (no matter how long) do not improve the final result, an upper bound of iterations number was introduced.
 If the problem is not solved in this reasonable number of iterations, current execution of the algorithm is aborted and reattempted.
 In order to overcome this obvious drawback and learn about its relation to the selection methods, we have chosen to implement two ways of time measurement:
 \begin{itemize}
@@ -233,8 +233,8 @@ Two methods have been compared using different machines, thus will be presented 
 }
 \end{table}
 
-The results clearly indicate a better performance for the elitist selection algorithm both in terms of time and the amount of generations. The numbers however include only the
-\textit{valid} runs, discarding the cubes impossible for the algorithm to solve.
+The results clearly indicate a better performance for the elitist selection algorithm both in terms of time and the amount of generations. This numbers however include only the
+\textit{valid} runs, discarding the attempts stuck and impossible for the algorithm to progress any further.
 
 \pagebreak
 \subsubsection{Also \textit{invalid} runs}
@@ -303,9 +303,70 @@ This is probably due the difference in the measurement method and is more thorou
 
 The tournament selection however does not perform better in solving the cube, but is less likely to get stuck during the computation and gives better results when counting all executions. The attempt to explain this phenomenon can be found in the final section of the article.
 
+
+\pagebreak
 \subsection{Solution reduction}
 
-\todo{TODO}
+As expected implemented reduction strategy introduced only a subtle improvement.\\
+The lenght of the solution was proportional to the number of generations in a successful algorithm run,
+hence elitist selection yielded shorter rotatation sequences.
+
+\begin{table}[h]
+\centering
+\caption{Elitist selection}
+\label{table:red_elitist_tests}
+\subfloat[Average solution length]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 360.8 & 284.2 & 248\\
+  \hline
+  \textbf{20} & 417 & 351.6 & 290.6\\
+  \hline
+  \textbf{50} & 429 & 404.6 & 328.8\\
+  \end{tabular}
+}
+\subfloat[Relative possible reduction]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 0.018 & 0.026 & 0.023	\\
+  \hline
+  \textbf{20} & 0.017 & 0.022 & 0.017 \\
+  \hline
+  \textbf{50} & 0.019 & 0.02 & 0.022\\
+  \end{tabular}
+}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\caption{Tournament selection}
+\label{table:red_tournament_tests}
+\subfloat[Average solution length]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 549.6 & 506.2 & 400\\
+  \hline
+  \textbf{20} & 601.2 & 499 & 351.8\\
+  \hline
+  \textbf{50} & 571.4 & 524.6 & 387.2\\
+  \end{tabular}
+}
+\subfloat[Relative possible reduction]{
+  \begin{tabular}{c|c|c|c}
+  & \textbf{100} & \textbf{200} & \textbf{500}\\
+  \hline
+  \textbf{10} & 0.0167 & 0.02 & 0.0246	\\
+  \hline
+  \textbf{20} & 0.0149 & 0.02 & 0.02\\
+  \hline
+  \textbf{50} & 0.0197 & 0.0177 & 0.0204\\
+  \end{tabular}
+}
+\end{table}
 
 \section{Conclusions}
 
@@ -315,8 +376,7 @@ Tests analyzing the performance of various methods of selection have been carrie
 
 This phenomenon might be caused by the variety of population, which seems to be smothered by the elitist selection. By selecting only the narrow group of global champions in each generation, the population quickly becomes very homogenous and it is more and more difficult to create a solution varying significantly from the others. Tournament selection on the other hand enables occasional advancements of weaker individuals, which can outperform the rest of the population in future generations. This ability makes also the algorithm less vulnerable to becoming halted by an unfortunate cube configuration.
 
-... \todo{o skracaniu osobników}
-
-Further study of the topic might include examining the population diversity in each selection method or developing more advanced algorithms for the reduction of long solutions.
+Further study of the topic might include examining the population diversity in each selection method or developing more advanced algorithms for the reduction of long solutions,
+but this would entail changing original Herdy's algorithm to some other, designed specially to produce short solutions, such as, for instance Thistlethwaite algorithm.
 
 \end{document}
