@@ -5,6 +5,7 @@ from random import shuffle, choice, seed
 from cube_solver.cube import Cube
 from cube_solver.mutation import mutations
 
+
 MAX_GENERATIONS = 200
 
 PARENTS = 10
@@ -40,8 +41,12 @@ def chunks(l, n):
         yield l[i:i + n]
 
 
+def fitness(individual):
+    return individual[0].fitness
+
+
 def solved(best_guy):
-    return best_guy[0].fitness == 0
+    return fitness(best_guy) == 0
 
 
 def mutate(individuals_and_applied_rotations):
@@ -57,7 +62,7 @@ def mutate(individuals_and_applied_rotations):
 
 
 def truncation_selection(population, parents):
-    population = sorted(population, key=lambda pair: (pair[0].fitness, len(pair[1])))
+    population = sorted(population, key=lambda individual: (fitness(individual), len(individual[1])))
     population = population[:parents]
     best_guy = population[0]
     return population, best_guy
@@ -70,8 +75,8 @@ def tournament_selection(population, parents):
     chunk_length = parents
 
     for group in chunks(population, chunk_length):
-        local_best = min(group, key=lambda x: x[0].fitness)
-        if local_best[0].fitness < global_best[0].fitness:
+        local_best = min(group, key=lambda x: fitness(x))
+        if fitness(local_best) < fitness(global_best):
             global_best = local_best
         new_population.append(local_best)
 
@@ -103,7 +108,7 @@ def run(problem=None, parents=PARENTS, offspring=OFFSPRING, use_tournament_selec
 
     selection_fn = tournament_selection if use_tournament_selection else truncation_selection
 
-    #print("Original problem fitness: " + str(problem.fitness))
+    # print("Original problem fitness: " + str(problem.fitness))
 
     generations = 0
     best_guy = population[0]
@@ -124,14 +129,14 @@ def run(problem=None, parents=PARENTS, offspring=OFFSPRING, use_tournament_selec
         population, best_guy = selection_fn(population, parents)
 
         print("Generation: %d\tPopulation: %s\tFitness: %d\tBest_guy's_rotations_count: %s"
-              % (generations, len(population), best_guy[0].fitness, len(best_guy[1])))
+              % (generations, len(population), fitness(best_guy), len(best_guy[1])))
 
         generations += 1
 
     if generations == MAX_GENERATIONS:
         return None
     else:
-        #print("Solved in %d generations" % generations)
+        # print("Solved in %d generations" % generations)
         return generations, len(best_guy[1]), calc_compression(best_guy[1])
 
 
