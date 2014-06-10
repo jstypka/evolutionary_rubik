@@ -51,12 +51,6 @@ class Cube:
         self.faces = [face(i) for i in range(6)]
         self.fitness = 0
 
-    # def __eq__(self, obj):
-    #     return isinstance(obj, Cube) and obj.faces == self.faces
-    #
-    # def __ne__(self, obj):
-    #     return not self == obj
-
     def scramble(self, moves=70):
         for i in range(moves):
             random.choice(rotate_functions)(self)

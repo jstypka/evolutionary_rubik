@@ -1,5 +1,5 @@
 from cube_solver.cube import Cube
-from cube_solver.mutation import add_3_other_orientations, mutations
+from cube_solver.mutation import add_3_other_orientations, all_mutations
 
 
 def test_add_3_other_orientations():
@@ -21,7 +21,7 @@ MAX_ACCEPTED_FITNESS_CHANGE = 117
 
 
 def _each_mutation_changes_fitness_only_slightly(cube_factory):
-    for mutation in mutations:
+    for mutation in all_mutations:
         cube = cube_factory()
         fitness_before = cube.fitness
         for rotation in mutation:

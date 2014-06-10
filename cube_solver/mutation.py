@@ -70,7 +70,7 @@ def add_symmetrical_sequences(magic_moves, orientations):
     return mutations
 
 
-mutations = add_symmetrical_sequences(_magic_moves, _orientations)
+all_mutations = add_symmetrical_sequences(_magic_moves, _orientations)
 
 rotate_functions = [F, B, R, U, L, D]
 
