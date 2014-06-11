@@ -175,7 +175,7 @@ Two methods have been compared using different machines, thus will be presented 
 
 \subsubsection{Macromutation}
 
-The problem of halting in a local optimum have also been tackled by the use of \textit{macromutation}. The basic idea of this method is to apply a sequence of deep mutations whenever the algorithm seems to stop on a certain fitness value before going to the selection phase. In our case a deep mutations is nothing more than a concatenated string of normal mutations, but exceptionally long. This set of mutations applied at once is able to change the fitness value more significantly and selection
+The problem of halting in a local optimum have also been tackled by the use of \textit{macromutation}. The basic idea of this method is to apply a sequence of deep mutations whenever the algorithm seems to stop on a certain fitness value before going to the selection phase. In our case a deep mutation is nothing more than a concatenated string of normal mutations, but exceptionally long. This set of mutations applied at once is able to change the fitness value more significantly and selection
 is not performed prematurely.
 
 This approach however did not give satisfying results. After observing no change in a population for 40 generations a random \textit{deep mutation} have been applied (sequence of 2-5 normal mutations), but no significant change in the algorithm behaviour was noted. Seldom the value finally dropped after a few generations, but this also happened without using macromutation with a similar frequency. Therefore we gave up using this method, because of lack of results.
